@@ -15,7 +15,6 @@ int main(int argc, char *argv[])
 
 	char *buffer; // used to store line being searched
 	size_t bufsize = 100;
-	size_t characters;
 
 	/* no command line args */
 	if ( argc < 2 ) {
@@ -25,6 +24,7 @@ int main(int argc, char *argv[])
 
 	for (i=2; i<argc; i++) {
 
+		/* if files use if branch, else use stdin from else branch */
 		if (argc > 2) {
 			fp = fopen(argv[i], "r");
 		} else {
@@ -39,14 +39,11 @@ int main(int argc, char *argv[])
 		while ( !feof(fp) ) {
 
 			buffer = (char *) malloc (bufsize * sizeof(char));
-			characters = getline (&buffer, &bufsize, fp);
-
-			if ( characters < 1 ) {
-				printf("error");
-			}
-
-			if ( strstr(buffer, argv[1]) != NULL) {
-					printf("\n%s", buffer);
+			
+			while ( getline(&buffer, &bufsize, fp) != -1 ) {
+				if ( strstr(buffer, argv[1]) != NULL) {
+					printf("%s", buffer);
+				}
 			}
 
 		}
