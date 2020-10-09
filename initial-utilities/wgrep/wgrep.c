@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define ERRARGS "wgrep: searchterm [file ...]\n"
 #define ERRFILE "wgrep: cannot open file\n"
@@ -11,11 +12,18 @@ int main(int argc, char *argv[])
 
 	FILE *fp;
 
+	char *searchterm;
+
+	char buff[50];
+
 	/* check for command-line args */
 	if ( argc == 1 ) {
 		printf("%s", ERRARGS);
 		return(1);
 	}
+
+	searchterm = (char *) malloc(1 * sizeof(*argv[1]));
+	strcpy(searchterm, argv[1]);
 
 	/* VVVV REMOVE WHEN RUNNING TEST SCRIPT VVVV 
 
@@ -28,6 +36,8 @@ int main(int argc, char *argv[])
 
 	 ^^^^ REMOVE WHEN RUNNING TEST SCRIPT ^^^^ */
 
+	printf("\nSearch term: %s\n", searchterm);
+
 	for (i=2; i<argc; i++) {
 		fp = fopen(argv[i], "r");
 
@@ -35,6 +45,7 @@ int main(int argc, char *argv[])
 			printf("%s", ERRFILE);
 			exit(1);
 		}
+
 
 		while ( !feof(fp) ) {
 			if (fgets(buff, 80, fp) != NULL) {
