@@ -22,19 +22,17 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
+
 	for (i=2; i<argc; i++) {
 
-		/* if files use if branch, else use stdin from else branch */
-		if (argc > 2) {
-			fp = fopen(argv[i], "r");
-		} else {
-			fp = stdin;
-		}
+		fp = fopen(argv[i], "r");
 
 		if (fp == NULL) {
 			printf("%s", ERRFILE);
 			exit(1);
 		}
+
+		
 
 		while ( !feof(fp) ) {
 
@@ -53,7 +51,4 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
-
-
-
 
