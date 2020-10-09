@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 
 #define ERRARGS "wgrep: searchterm [file ...]\n"
 #define ERRFILE "wgrep: cannot open file\n"
@@ -13,48 +12,41 @@ int main(int argc, char *argv[])
 
 	FILE *fp;
 
-	int bytes_read;
-	size_t nbytes = 100;
-	char *line; // used to store line being searched
 
-	/* check for command-line args */
-	if ( argc <= 1 ) {
+	char *buffer; // used to store line being searched
+	size_t bufsize = 100;
+	size_t characters;
+
+	/* no command line args */
+	if ( argc < 2 ) {
 		printf("%s", ERRARGS);
 		exit(1);
 	}
 
-	/* VVVV REMOVE WHEN RUNNING TEST SCRIPT VVVV 
-
-	printf("\nSEARCH TERM : %s", argv[1]);
-
-	printf("\nFILE(S) TO SEARCH : ");
-	for ( i=2; i<argc; i++) {
-		printf("%s ", argv[i]);
-	}
-
-	 ^^^^ REMOVE WHEN RUNNING TEST SCRIPT ^^^^ */
-
-	// printf("\nSearch term: %s\n", argv[1]);
-
 	for (i=2; i<argc; i++) {
-		fp = fopen(argv[i], "r");
+
+		if (argc > 2) {
+			fp = fopen(argv[i], "r");
+		} else {
+			fp = stdin;
+		}
 
 		if (fp == NULL) {
-			perror(ERRFILE);
-//			printf("%s", ERRFILE);
+			printf("%s", ERRFILE);
 			exit(1);
 		}
 
 		while ( !feof(fp) ) {
-		/* magic happens here */
 
-			line = (char *) malloc (nbytes + 1);
-			bytes_read = getline (&line, &nbytes, fp);
+			buffer = (char *) malloc (bufsize * sizeof(char));
+			characters = getline (&buffer, &bufsize, fp);
 
-			if (bytes_read == -1) {
-				printf("ERROR");
-			} else {
-				printf("%s", line);
+			if ( characters < 1 ) {
+				printf("error");
+			}
+
+			if ( strstr(buffer, argv[1]) != NULL) {
+					printf("\n%s", buffer);
 			}
 
 		}
@@ -64,6 +56,7 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
+
 
 
 
